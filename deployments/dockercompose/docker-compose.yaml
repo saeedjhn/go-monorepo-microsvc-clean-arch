@@ -1,0 +1,122 @@
+version: '3.8'
+
+services:
+  ####################### APPLICATION #######################
+  app-dev:
+    container_name: go-backend-clean-arch_app-dev
+    build:
+      context: ../..
+      dockerfile: ./deployments/Dockerfile
+      target: dev # For Development
+    env_file:
+      - ./config.dev.yaml
+    ports:
+      #      - "8000:8000"
+      - "50000:50000"
+    volumes:
+      - ../:/app # important (- ./:/app)
+    networks:
+      - go-backend-clean-arch_network
+    depends_on:
+      - mysqldb
+      #      - psqldb
+      #      - mongodb
+      - redis
+
+
+      #  app-prod:
+      #    build:
+      #      context: ..
+      #      dockerfile: ./deployments/Dockerfile
+      #      target: prod # For Production
+
+      ######################## MYSQL ########################
+  mysqldb:
+    container_name: go-backend-clean-arch_mysqldb
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: backend_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+    restart: always
+    command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+    networks:
+      - go-backend-clean-arch_network
+
+    ####################### POSTGRES #######################
+    #  psqldb:
+    #    container_name: go-backend-clean-arch_psqldb
+    #    image: postgres:latest
+    #    environment:
+    #      POSTGRES_USER: admin
+    #      POSTGRES_PASSWORD: 123456
+    #      POSTGRES_DB: backend_db
+    #    ports:
+    #      - "5001:5432"
+    #    volumes:
+    #      - psql:/var/lib/psql/data
+    #    restart: always
+    #    networks:
+    #      - go-backend-clean-arch_network
+
+    ####################### MONOGO #######################
+  #  mongodb:
+  #    container_name: go-backend-clean-arch_mongodb
+  #    image: mongo:latest
+  #    environment:
+  #      MONGO_INITDB_ROOT_USERNAME: admin
+  #      MONGO_INITDB_ROOT_PASSWORD: 123456
+  #    ports:
+  #      - "27017:27017"
+  #    volumes:
+  #      - mongodb-data:/data/db
+  #    restart: unless-stopped
+  #    networks:
+  #      - go-backend-clean-arch_network
+
+  ####################### PGADMIN #######################
+  #  pgadmin:
+  #    image: dpage/pgadmin4
+  #    environment:
+  #      PGADMIN_DEFAULT_EMAIL: ghafbu@gmail.com
+  #      PGADMIN_DEFAULT_PASSWORD: 123456
+  #    volumes:
+  #      - pgadmin:/var/lib/pgadmin/data
+  #    ports:
+  #      - "5002:80"
+  #    networks:
+  #      - go-backend-clean-arch_network
+  #    restart: unless-stopped
+  #    depends_on:
+  #      - psqldb
+
+  ####################### REDIS #######################
+  redis:
+    container_name: go-backend-clean-arch_redis
+    image: redis:latest
+    command: redis-server --loglevel warning --protected-mode no --save "" --appendonly no
+    #    command: [ "redis-server", "/etc/redis/redis.conf" ]
+    volumes:
+      - redis:/var/lib/redis/data
+    ports:
+      - "5003:6379"
+    networks:
+      - go-backend-clean-arch_network
+
+volumes:
+  mysql:
+  #  psql:
+  #  mongodb-data:
+  #  pgadmin:
+  redis:
+  logs:
+
+
+networks:
+  go-backend-clean-arch_network:
+    driver: bridge
