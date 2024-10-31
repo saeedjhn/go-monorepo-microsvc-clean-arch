@@ -1,0 +1,96 @@
+services:
+  ######################################### MICRO-SERVICES ##########################################
+  ######################################### GLOBAL SERVICES #########################################
+  ######################## MYSQL ########################
+  mysqldb:
+    container_name: go-monorepo-microsvc-clean-arch_mysqldb
+    image: mysql:latest
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
+    volumes:
+      - mysql:/var/lib/mysql
+    restart: always
+    command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+    networks:
+      - go-monorepo-microsvc-clean-arch_network
+
+    ####################### POSTGRES #######################
+    #  psqldb:
+    #    container_name: go-monorepo-microsvc-clean-arch_psqldb
+    #    image: postgres:latest
+    #    environment:
+    #      POSTGRES_USER: admin
+    #      POSTGRES_PASSWORD: 123456
+    #      POSTGRES_DB: backend_db
+    #    ports:
+    #      - "5001:5432"
+    #    volumes:
+    #      - psql:/var/lib/psql/data
+    #    restart: always
+    #    networks:
+    #      - go-monorepo-microsvc-clean-arch_network
+
+    ####################### MONOGO #######################
+  #  mongodb:
+  #    container_name: go-monorepo-microsvc-clean-arch_mongodb
+  #    image: mongo:latest
+  #    environment:
+  #      MONGO_INITDB_ROOT_USERNAME: admin
+  #      MONGO_INITDB_ROOT_PASSWORD: 123456
+  #    ports:
+  #      - "27017:27017"
+  #    volumes:
+  #      - mongodb-data:/data/db
+  #    restart: unless-stopped
+  #    networks:
+  #      - go-monorepo-microsvc-clean-arch_network
+
+  ####################### PGADMIN #######################
+  #  pgadmin:
+  #    image: dpage/pgadmin4
+  #    environment:
+  #      PGADMIN_DEFAULT_EMAIL: ghafbu@gmail.com
+  #      PGADMIN_DEFAULT_PASSWORD: 123456
+  #    volumes:
+  #      - pgadmin:/var/lib/pgadmin/data
+  #    ports:
+  #      - "5002:80"
+  #    networks:
+  #      - go-monorepo-microsvc-clean-arch_network
+  #    restart: unless-stopped
+  #    depends_on:
+  #      - psqldb
+
+  ######################## REDIS ########################
+  redis:
+    container_name: go-monorepo-microsvc-clean-arch_redis
+    image: redis:latest
+    env_file:
+      - .env
+    command: redis-server --loglevel warning --protected-mode no --save "" --appendonly no
+    #    command: [ "redis-server", "/etc/redis/redis.conf" ]
+    volumes:
+      - redis:/var/lib/redis/data
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    networks:
+      - go-monorepo-microsvc-clean-arch_network
+
+volumes:
+  mysql:
+  #  psql:
+  #  mongodb-data:
+  #  pgadmin:
+  redis:
+  logs:
+
+networks:
+  go-monorepo-microsvc-clean-arch_network:
+    driver: bridge

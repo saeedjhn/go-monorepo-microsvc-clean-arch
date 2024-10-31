@@ -1,56 +1,29 @@
-version: '3.8'
-
 services:
-  ####################### APPLICATION #######################
-  app-dev:
-    container_name: go-backend-clean-arch_app-dev
-    build:
-      context: ../..
-      dockerfile: ./deployments/Dockerfile
-      target: dev # For Development
-    env_file:
-      - ./config.dev.yaml
-    ports:
-      #      - "8000:8000"
-      - "50000:50000"
-    volumes:
-      - ../:/app # important (- ./:/app)
-    networks:
-      - go-backend-clean-arch_network
-    depends_on:
-      - mysqldb
-      #      - psqldb
-      #      - mongodb
-      - redis
-
-
-      #  app-prod:
-      #    build:
-      #      context: ..
-      #      dockerfile: ./deployments/Dockerfile
-      #      target: prod # For Production
-
-      ######################## MYSQL ########################
+  ######################################### MICRO-SERVICES ##########################################
+  ######################################### GLOBAL SERVICES #########################################
+  ######################## MYSQL ########################
   mysqldb:
-    container_name: go-backend-clean-arch_mysqldb
+    container_name: go-monorepo-microsvc-clean-arch_mysqldb
     image: mysql:latest
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: backend_db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
     volumes:
       - mysql:/var/lib/mysql
     restart: always
     command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
     networks:
-      - go-backend-clean-arch_network
+      - go-monorepo-microsvc-clean-arch_network
 
     ####################### POSTGRES #######################
     #  psqldb:
-    #    container_name: go-backend-clean-arch_psqldb
+    #    container_name: go-monorepo-microsvc-clean-arch_psqldb
     #    image: postgres:latest
     #    environment:
     #      POSTGRES_USER: admin
@@ -62,11 +35,11 @@ services:
     #      - psql:/var/lib/psql/data
     #    restart: always
     #    networks:
-    #      - go-backend-clean-arch_network
+    #      - go-monorepo-microsvc-clean-arch_network
 
     ####################### MONOGO #######################
   #  mongodb:
-  #    container_name: go-backend-clean-arch_mongodb
+  #    container_name: go-monorepo-microsvc-clean-arch_mongodb
   #    image: mongo:latest
   #    environment:
   #      MONGO_INITDB_ROOT_USERNAME: admin
@@ -77,7 +50,7 @@ services:
   #      - mongodb-data:/data/db
   #    restart: unless-stopped
   #    networks:
-  #      - go-backend-clean-arch_network
+  #      - go-monorepo-microsvc-clean-arch_network
 
   ####################### PGADMIN #######################
   #  pgadmin:
@@ -90,23 +63,25 @@ services:
   #    ports:
   #      - "5002:80"
   #    networks:
-  #      - go-backend-clean-arch_network
+  #      - go-monorepo-microsvc-clean-arch_network
   #    restart: unless-stopped
   #    depends_on:
   #      - psqldb
 
-  ####################### REDIS #######################
+  ######################## REDIS ########################
   redis:
-    container_name: go-backend-clean-arch_redis
+    container_name: go-monorepo-microsvc-clean-arch_redis
     image: redis:latest
+    env_file:
+      - .env
     command: redis-server --loglevel warning --protected-mode no --save "" --appendonly no
     #    command: [ "redis-server", "/etc/redis/redis.conf" ]
     volumes:
       - redis:/var/lib/redis/data
     ports:
-      - "5003:6379"
+      - "${REDIS_PORT}:${REDIS_PORT}"
     networks:
-      - go-backend-clean-arch_network
+      - go-monorepo-microsvc-clean-arch_network
 
 volumes:
   mysql:
@@ -116,7 +91,6 @@ volumes:
   redis:
   logs:
 
-
 networks:
-  go-backend-clean-arch_network:
+  go-monorepo-microsvc-clean-arch_network:
     driver: bridge
