@@ -28,8 +28,6 @@ func main() {
 
 	log.Println("Working Directory:", workingDir)
 
-	log.Println(configPath(workingDir, envMode, _Service))
-
 	// Load the configuration based on the environment and service name
 	cfg, err := user.Load(configPath(workingDir, envMode, _Service))
 	if err != nil {
