@@ -15,7 +15,7 @@ func main() {
 	var envMode string
 
 	// Parse command-line flag for environment mode with default value as development
-	flag.StringVar(&envMode, "env-mode", user.Dev.ToString(), "config path, e.g., -env-mode dev")
+	flag.StringVar(&envMode, "env-mode", user.Development.ToString(), "config path, e.g., -env-mode dev")
 	flag.Parse()
 
 	log.Println("Environment mode:", envMode)
@@ -39,23 +39,23 @@ func main() {
 
 // configPath constructs paths to .env files based on environment mode and service.
 func configPath(workingDir, envMode, service string) []string {
-	paths := make([]string, 0, 2)
+	paths := make([]string, 0, 2) //nolint:mnd
 
 	// Append paths for development environment
-	if envMode == user.Dev.ToString() {
+	if envMode == user.Development.ToString() {
 		paths = append(paths,
-			filepath.Join(workingDir, "deployments/dev", ".env"),
-			filepath.Join(workingDir, "deployments", service, "dev", ".env"),
+			filepath.Join(workingDir, "deployments/development", ".env"),
+			filepath.Join(workingDir, "deployments", service, "development", ".env"),
 		)
 
 		return paths
 	}
 
 	// Append paths for production environment
-	if envMode == user.Prod.ToString() {
+	if envMode == user.Production.ToString() {
 		paths = append(paths,
-			filepath.Join(workingDir, "deployments/prod", ".env"),
-			filepath.Join(workingDir, "deployments", service, "prod", ".env"),
+			filepath.Join(workingDir, "deployments/production", ".env"),
+			filepath.Join(workingDir, "deployments", service, "production", ".env"),
 		)
 
 		return paths

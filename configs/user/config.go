@@ -2,19 +2,19 @@ package user
 
 import "time"
 
-type Env string
+type EnvMode string
 
-func (e Env) ToString() string {
+func (e EnvMode) ToString() string {
 	return string(e)
 }
 
 const (
-	Dev  Env = "dev"
-	Prod Env = "prod"
+	Development EnvMode = "development"
+	Production  EnvMode = "production"
 )
 
 type Application struct {
-	Env             Env     `env:"ENV_MODE"`
+	Env             EnvMode `env:"ENV_MODE"`
 	Debug           bool    `env:"DEBUG"`
 	EntropyPassword float64 `env:"ENTROPY_PASSWORD"`
 }
