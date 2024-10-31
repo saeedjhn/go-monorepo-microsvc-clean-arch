@@ -38,6 +38,7 @@ services:
     #      - go-monorepo-microsvc-clean-arch_network
 
     ####################### MONOGO #######################
+
   #  mongodb:
   #    container_name: go-monorepo-microsvc-clean-arch_mongodb
   #    image: mongo:latest
