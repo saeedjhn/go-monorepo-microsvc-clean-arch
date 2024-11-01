@@ -1,0 +1,20 @@
+services:
+  ####################### Application #######################
+  user-dev:
+    build:
+      context: ../../..
+      dockerfile: deployments/user/development/Dockerfile
+      target: development
+    container_name: go-monorepo-microsvc-clean-arch_user-development
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+      - "${GRPC_PORT}:${GRPC_PORT}"
+    volumes:
+      - ./../../../:/app
+    networks:
+      - go-monorepo-microsvc-clean-arch_network
+    depends_on:
+      - mysqldb
+      - redis
+  #      - rabbitmq
+

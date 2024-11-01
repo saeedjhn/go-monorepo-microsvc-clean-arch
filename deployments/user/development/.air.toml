@@ -4,14 +4,14 @@ tmp_dir = "build"
 
 [build]
 args_bin = []
-cmd = "go build -o app/admin/service/tmp/main app/admin/service/cmd/server/main.go"
-bin = "app/admin/service/tmp/main"
+cmd = "go build -o build/user/main cmd/user/main.go"
+bin = "build/user/main"
 delay = 1000
 follow_symlink = false
 full_bin = ""
-include_dir = ["app/admin"]
+include_dir = ["internal/user", "cmd/user", "api/user", "configs/user"]
 include_ext = ["go", "tpl", "tmpl", "html"]
-exclude_dir = ["app/*", "assets", "tmp", "vendor", "testdata"]
+exclude_dir = ["internal/*", "assets", "tmp", "vendor", "testdata"]
 exclude_regex = ["_test.go"]
 exclude_unchanged = false
 exclude_file = []

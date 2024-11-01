@@ -1,6 +1,8 @@
+include:
+  - ../user/production/docker-compose.yaml
+
 services:
-  ######################################### MICRO-SERVICES ##########################################
-  ######################################### GLOBAL SERVICES #########################################
+  ######################################### COMMON SERVICES #########################################
   ######################## MYSQL ########################
   mysqldb:
     container_name: go-monorepo-microsvc-clean-arch_mysqldb
@@ -38,6 +40,7 @@ services:
     #      - go-monorepo-microsvc-clean-arch_network
 
     ####################### MONOGO #######################
+
   #  mongodb:
   #    container_name: go-monorepo-microsvc-clean-arch_mongodb
   #    image: mongo:latest
