@@ -19,7 +19,7 @@ func main() {
 	var envMode string
 
 	// Parse command-line flag for environment mode with default value as development
-	flag.StringVar(&envMode, "env-mode", user.Development.String(), "config path, e.g., -env-mode dev")
+	flag.StringVar(&envMode, "env-mode", user.Development.String(), "config path, e.g., -env-mode development")
 	flag.Parse()
 
 	log.Println("Environment mode:", envMode)
