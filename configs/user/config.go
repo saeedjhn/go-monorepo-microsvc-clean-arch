@@ -4,7 +4,7 @@ import "time"
 
 type EnvMode string
 
-func (e EnvMode) ToString() string {
+func (e EnvMode) String() string {
 	return string(e)
 }
 
@@ -29,14 +29,6 @@ type GRPCServer struct {
 	Port    string        `env:"GRPC_PORT"`
 	Timeout time.Duration `env:"GRPC_TIMEOUT"`
 }
-
-//type Pprof struct {
-//	Port              string        `env:"port"`
-//	ReadTimeout       time.Duration `env:"read_timeout"`
-//	ReadHeaderTimeout time.Duration `env:"read_header_timeout"`
-//	WriteTimeout      time.Duration `env:"write_timeout"`
-//	IdleTimeout       time.Duration `env:"idle_timeout"`
-//}
 
 type MYSQL struct {
 	Host string `env:"MYSQL_HOST"`
