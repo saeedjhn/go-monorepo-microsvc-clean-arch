@@ -3,9 +3,11 @@ include:
 
 services:
   ######################################### COMMON SERVICES #########################################
+
   ######################## MYSQL ########################
+
   mysqldb:
-    container_name: go-monorepo-microsvc-clean-arch_mysqldb
+    container_name: go-monorepo-microsvc-clean-arch_production_mysqldb
     image: mysql:latest
     env_file:
       - .env
@@ -23,23 +25,24 @@ services:
     networks:
       - go-monorepo-microsvc-clean-arch_network
 
-    ####################### POSTGRES #######################
-    #  psqldb:
-    #    container_name: go-monorepo-microsvc-clean-arch_psqldb
-    #    image: postgres:latest
-    #    environment:
-    #      POSTGRES_USER: admin
-    #      POSTGRES_PASSWORD: 123456
-    #      POSTGRES_DB: backend_db
-    #    ports:
-    #      - "5001:5432"
-    #    volumes:
-    #      - psql:/var/lib/psql/data
-    #    restart: always
-    #    networks:
-    #      - go-monorepo-microsvc-clean-arch_network
+  ####################### POSTGRES #######################
 
-    ####################### MONOGO #######################
+  #  psqldb:
+  #    container_name: go-monorepo-microsvc-clean-arch_psqldb
+  #    image: postgres:latest
+  #    environment:
+  #      POSTGRES_USER: admin
+  #      POSTGRES_PASSWORD: 123456
+  #      POSTGRES_DB: backend_db
+  #    ports:
+  #      - "5001:5432"
+  #    volumes:
+  #      - psql:/var/lib/psql/data
+  #    restart: always
+  #    networks:
+  #      - go-monorepo-microsvc-clean-arch_network
+
+  ####################### MONGO #######################
 
   #  mongodb:
   #    container_name: go-monorepo-microsvc-clean-arch_mongodb
@@ -56,6 +59,7 @@ services:
   #      - go-monorepo-microsvc-clean-arch_network
 
   ####################### PGADMIN #######################
+
   #  pgadmin:
   #    image: dpage/pgadmin4
   #    environment:
@@ -72,8 +76,9 @@ services:
   #      - psqldb
 
   ######################## REDIS ########################
+
   redis:
-    container_name: go-monorepo-microsvc-clean-arch_redis
+    container_name: go-monorepo-microsvc-clean-arch_production_redis
     image: redis:latest
     env_file:
       - .env

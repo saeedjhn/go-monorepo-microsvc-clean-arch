@@ -1,16 +1,14 @@
 services:
   ####################### Application #######################
-  user-prod:
+  user-service-production:
     build:
       context: ../../..
       dockerfile: deployments/user/production/Dockerfile
       target: production
-    container_name: go-monorepo-microsvc-clean-arch_user-production
-    ports:
-      - "${HTTP_PORT}:${HTTP_PORT}"
-      - "${GRPC_PORT}:${GRPC_PORT}"
-    volumes:
-      - ./../../../:/app
+    container_name: go-monorepo-microsvc-clean-arch_user-service-production
+#    ports:
+    #      - "${HTTP_PORT}:${HTTP_PORT}"
+    #      - "${GRPC_PORT}:${GRPC_PORT}"
     networks:
       - go-monorepo-microsvc-clean-arch_network
     depends_on:

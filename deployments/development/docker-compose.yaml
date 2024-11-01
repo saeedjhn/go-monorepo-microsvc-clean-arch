@@ -3,9 +3,30 @@ include:
 
 services:
   ######################################### COMMON SERVICES #########################################
+
+  ######################## API-GATEWAY(Nginx) ########################
+
+  nginx:
+    image: nginx:alpine
+    build:
+      context: .
+    env_file:
+      - .env
+    ports:
+      - "${NGINX_HTTP_PORT_FOR_ALL_REQUEST_LISTEN}:${NGINX_HTTP_PORT_FOR_ALL_REQUEST_LISTEN}"
+      - "${NGINX_USER_SERVICE_GRPC_PORT}:${NGINX_USER_SERVICE_GRPC_PORT}"
+    volumes:
+      - ./nginx.conf.template:/etc/nginx/nginx.conf.template
+    command: /bin/sh -c "envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    networks:
+      - go-monorepo-microsvc-clean-arch_network
+    depends_on:
+      - user-service-development
+
   ######################## MYSQL ########################
+
   mysqldb:
-    container_name: go-monorepo-microsvc-clean-arch_mysqldb
+    container_name: go-monorepo-microsvc-clean-arch_development_mysqldb
     image: mysql:latest
     env_file:
       - .env
@@ -23,23 +44,24 @@ services:
     networks:
       - go-monorepo-microsvc-clean-arch_network
 
-    ####################### POSTGRES #######################
-    #  psqldb:
-    #    container_name: go-monorepo-microsvc-clean-arch_psqldb
-    #    image: postgres:latest
-    #    environment:
-    #      POSTGRES_USER: admin
-    #      POSTGRES_PASSWORD: 123456
-    #      POSTGRES_DB: backend_db
-    #    ports:
-    #      - "5001:5432"
-    #    volumes:
-    #      - psql:/var/lib/psql/data
-    #    restart: always
-    #    networks:
-    #      - go-monorepo-microsvc-clean-arch_network
+  ####################### POSTGRES #######################
 
-    ####################### MONOGO #######################
+  #  psqldb:
+  #    container_name: go-monorepo-microsvc-clean-arch_psqldb
+  #    image: postgres:latest
+  #    environment:
+  #      POSTGRES_USER: admin
+  #      POSTGRES_PASSWORD: 123456
+  #      POSTGRES_DB: backend_db
+  #    ports:
+  #      - "5001:5432"
+  #    volumes:
+  #      - psql:/var/lib/psql/data
+  #    restart: always
+  #    networks:
+  #      - go-monorepo-microsvc-clean-arch_network
+
+  ####################### MONOGO #######################
 
   #  mongodb:
   #    container_name: go-monorepo-microsvc-clean-arch_mongodb
@@ -56,6 +78,7 @@ services:
   #      - go-monorepo-microsvc-clean-arch_network
 
   ####################### PGADMIN #######################
+
   #  pgadmin:
   #    image: dpage/pgadmin4
   #    environment:
@@ -73,7 +96,7 @@ services:
 
   ######################## REDIS ########################
   redis:
-    container_name: go-monorepo-microsvc-clean-arch_redis
+    container_name: go-monorepo-microsvc-clean-arch_development_redis
     image: redis:latest
     env_file:
       - .env

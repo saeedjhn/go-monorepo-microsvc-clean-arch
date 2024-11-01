@@ -23,8 +23,14 @@ func New(cfg *user.Config) *Server {
 
 func (s Server) Run() error {
 	// Router Setup
-	s.Router.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "Hello world")
+	// http://localhost:80/v1/users
+	s.Router.GET("/v1/users/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "Hello world!!-----")
+	})
+
+	// http://localhost:80/v1/users/about
+	s.Router.GET("/v1/users/about", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "About page")
 	})
 
 	return s.Router.Start(fmt.Sprintf(":%s", s.Cfg.HTTPServer.Port))
