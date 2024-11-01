@@ -42,5 +42,5 @@ COPY --from=builder $PROJECT_DIR/build $PROJECT_DIR/build
 COPY --from=builder $PROJECT_DIR/deployments $PROJECT_DIR/deployments
 
 # Specify the command to run when the container starts (execute the built binary)
-CMD ["build/user/main"]
+CMD ["build/user/main", "-env-mode", "production"]
 
