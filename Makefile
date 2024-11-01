@@ -29,7 +29,6 @@ export LDFLAGS := -ldflags "-X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT} 
 # ==================================================================================== #
 # DEVELOPMENT
 # ==================================================================================== #
-
 ## test: run all tests
 .PHONY: test
 test:
@@ -42,154 +41,23 @@ test/cover:
 	go tool cover -html=/tmp/coverage.out # -html, func, etc...
 
 ## dev-up: Startup / Build services from docker-compose and air for live reloading
-.PHONY: dev-up
-dev-up:
+.PHONY: development-up
+development-up:
 	@echo
 	@echo " > Startup / Build services from docker-compose and air for live reloading"
 	@echo
-	@docker-compose -f deployments/dev/docker-compose.yaml up
+	@docker-compose -f deployments/development/docker-compose.yaml up
 
+# ==================================================================================== #
+# DEVELOPMENT
+# ==================================================================================== #
 ## prod-up: Startup / Build services from docker-compose and air for live reloading
-.PHONY: prod-up
-prod-up:
+.PHONY: production-up
+production-up:
 	@echo
 	@echo " > Startup / Build services from docker-compose"
 	@echo
-	@docker-compose -f deployments/prod/docker-compose.yaml up
-
-## Build: Build services from docker-compose
-.PHONY: build
-build:
-	@echo
-	@echo " > Build services from docker-compose"
-	@echo
-	@docker-compose -f deployments/docker-compose.yaml build
-
-## Down: Stop and remove containers, networks, images, and volumes
-.PHONY: down
-down:
-	@echo
-	@echo " > Stop and remove containers, networks, images, and volumes"
-	@echo
-	@docker-compose -f deployments/docker-compose.yaml down
-
-## Pprof: Start and Types of profiles available: allocates, block, cmdline, goroutine, heap, mutex, profile, threadcreate, trace
-.PHONY: PPROF
-pprof:
-	@echo
-	@echo " > pprof running"
-	@echo
-	go run ${PPROF}
-
-## watch: Run given command when code changes. e.g; make watch run="echo 'hey'"
-#.PHONY: watch
-#watch:
-#	@echo
-#	@echo " > Run given command when code changes"
-#	@echo
-#	@docker-compose -f deployments/docker-compose.yaml run --rm -p 8000:8000 -v $(CURDIR):/app -w /app app air -c .air.toml
-
-## run/http: compile and run http server program
-.PHONY: run/httpserver
-run/httpserver:
-	@echo
-	@echo " > Compile and run HTTPServer program"
-	@echo
-	go run ${HTTPSERVER}
-
-## run/cli: compile and run cli program
-.PHONY: run/cli
-run/cli:
-	@echo
-	@echo " > Compile and run CLI program"
-	@echo
-	go run ${CLI}
-
-## build/linux: compile packages and dependencies for linux
-.PHONY: build/linux
-build/linux:
-	@echo
-	@echo "  >  compile packages and dependencies"
-	@echo
-	cd ${GOBASE} && GOOS=linux GOARCH=${ARCH} go build ${LDFLAGS} -o ${GOBUILDBASE}/${BINARY}-linux-${ARCH}-${VERSION} . ; \
-	cd - >/dev/null
-
-.PHONY: build/linux/app
-build/linux/app:
-	@echo
-	@echo "  >  compile packages and dependencies"
-	@echo
-	cd ${CMD}; \
-	GOOS=linux GOARCH=${ARCH} \
-	go build ${LDFLAGS} -o ${GOBUILDBASE}/${BINARY}-linux-${ARCH}-${VERSION} ${HTTPSERVER} ; \
-	cd - >/dev/null
-
-## build/darwin: compile package and dependencies for darwin/mac-os
-.PHONY: build/darwin
-build/darwin:
-	@echo
-	@echo "  >  compile packages and dependencies"
-	@echo
-	cd ${GOBASE} \
-	GOOS=darwin GOARCH=${ARCH} \
-	go build ${LDFLAGS} \
-	-o ${GOBUILDBASE}/${BINARY}-darwin-${ARCH}-${VERSION} . ; \
-	cd - >/dev/null
-
-## build/windows: compile package and dependencies for windows
-.PHONY: build/windows
-build/windows:
-	@echo
-	@echo "  >  compile packages and dependencies"
-	@echo
-	cd ${GOBASE} \
-	GOOS=windows GOARCH=${ARCH} \
-	go build ${LDFLAGS} \
-	-o ${GOBUILDBASE}/${BINARY}-windows-${ARCH}-${VERSION}.exe . ; \
-	cd - >/dev/null
-
-## go/env: print Go environment information
-.PHONY: go/env
-go/env:
-	@echo "  >  Environment information"
-	go env
-
-## go/clean: remove object files and cached files
-.PHONY: go/clean
-go/clean:
-	@echo "  >  Cleaning build cache"
-    @GOPATH=$(GOPATH) GOBIN=$(GOBIN) go clean
-
-# ==================================================================================== #
-# SCHEDULER
-# ==================================================================================== #
-
-## run/scheduler: compile and run scheduler program
-.PHONY: run/scheduler
-run/scheduler:
-	@echo
-	@echo " > Compile and run Scheduler program"
-	@echo
-	go run ${SCHEDULER}
-
-# ==================================================================================== #
-# DATABASE MIGRATIONS
-# ==================================================================================== #
-
-## run/up:
-#.PHONY: run/up
-#run/up:
-#	docker-compose -f deployments/docker-compose.yaml up -d mysqldb
-#	go run $(MIGRATION) $(ARGS)  # make run/up ARGS=--up
-#
-#
-### run/down:
-#.PHONY: run/down
-#run/down:
-#
-### run/rollback:
-#.PHONY: run/rollback
-#run/rollback:
+	@docker-compose -f deployments/production/docker-compose.yaml up
 
 # ==================================================================================== #
 # QUALITY CONTROL
@@ -278,30 +146,6 @@ audit:
 #	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest && golangci-lint run --config .golangci.yml
 	golangci-lint run --config .golangci.yml
 	go test -v -race -buildvcs ./... # -vet=off: Nothing result
-
-# ==================================================================================== #
-# OPERATIONS
-# ==================================================================================== #
-
-## push: push changes to the remote Git repository
-.PHONY: push
-push: tidy audit no-dirty
-	git push
-
-# ==================================================================================== #
-# TOOLS
-# ==================================================================================== #
-### tool/pprof
-#.PHONY: tool/pprof
-#tool/pprof:
-#	curl http://localhost:8001/debug/pprof/goroutine --output goroutine.o
-#	go tool pprof -http=:8002 goroutine.o
-
-## tool/pprof
-.PHONY: tool/pprof/goroutine
-tool/pprof/goroutine:
-	curl http://localhost:8001/debug/pprof/goroutine --output goroutine.o
-	go tool pprof -http=:8002 goroutine.o
 
 # ==================================================================================== #
 # HELPERS
