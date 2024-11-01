@@ -91,21 +91,24 @@ services:
       - go-monorepo-microsvc-clean-arch_network
 
 
-######################################### GLOBAL SERVICES #########################################
+  ######################################### GLOBAL SERVICES #########################################
 
-######################## API-GATEWAY(Nginx) ########################
+  ######################## API-GATEWAY(Nginx) ########################
 
   nginx:
     image: nginx:alpine
     build:
       context: .
+      # The .env file in the project root, and the env_file: field in the Compose file are two different concepts.
+      # The .env is for settings a default environment for Compose. Values set in this file can be used within the Compose file.
+      # The env_file: field is for setting the default environment for a container. Values set in this can be used in the container, but not in the Compose file.
     env_file:
       - .env
     ports:
       - "${NGINX_HTTP_PORT_FOR_ALL_REQUEST_LISTEN}:${NGINX_HTTP_PORT_FOR_ALL_REQUEST_LISTEN}"
       - "${NGINX_USER_SERVICE_GRPC_PORT}:${NGINX_USER_SERVICE_GRPC_PORT}"
     volumes:
-      - ./nginx.conf.template:/etc/nginx/nginx.conf.template
+      - ./nginx.conf:/etc/nginx/nginx.conf.template
     command: /bin/sh -c "envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
     networks:
       - go-monorepo-microsvc-clean-arch_network
