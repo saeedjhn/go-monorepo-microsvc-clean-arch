@@ -40,7 +40,7 @@ test/cover:
 	go test -v -race -buildvcs -coverprofile=/tmp/coverage.out ./...
 	go tool cover -html=/tmp/coverage.out # -html, func, etc...
 
-## dev-up: Startup / Build services from docker-compose and air for live reloading
+## development-up: Startup / Build services from docker-compose and air for live reloading
 .PHONY: development-up
 development-up:
 	@echo
@@ -49,9 +49,9 @@ development-up:
 	@docker-compose -f deployments/development/docker-compose.yaml up
 
 # ==================================================================================== #
-# DEVELOPMENT
+# PRODUCTION
 # ==================================================================================== #
-## prod-up: Startup / Build services from docker-compose and air for live reloading
+## production-up: Startup / Build services from docker-compose and air for live reloading
 .PHONY: production-up
 production-up:
 	@echo

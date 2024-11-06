@@ -8,15 +8,12 @@ import (
 )
 
 // Load loads environment variables from a list of file paths and binds them to a Config struct.
-func Load(configPaths []string) (*Config, error) {
+func Load(configPath string) (*Config, error) {
 	var cfg Config
 
-	// Iterate over each path in configPaths to load the environment variables from each file
-	for _, path := range configPaths {
-		if err := godotenv.Load(path); err != nil {
-			// Return an error with context if unable to load a file
-			return nil, fmt.Errorf("error loading file '%s': %w", path, err)
-		}
+	if err := godotenv.Load(configPath); err != nil {
+		// Return an error with context if unable to load a file
+		return nil, fmt.Errorf("error loading file '%s': %w", configPath, err)
 	}
 
 	// Parse loaded environment variables into the Config struct

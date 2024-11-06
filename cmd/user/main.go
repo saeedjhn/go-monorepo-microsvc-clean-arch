@@ -67,30 +67,18 @@ func main() {
 }
 
 // configPath constructs paths to .env files based on environment mode and service.
-func configPath(workingDir, envMode, service string) []string {
-	paths := make([]string, 0, 2) //nolint:mnd
-
+func configPath(workingDir, envMode, service string) string {
 	// Append paths for development environment
 	if envMode == user.Development.String() {
-		paths = append(paths,
-			filepath.Join(workingDir, "deployments/development", ".env"),
-			filepath.Join(workingDir, "deployments/", service, "development", ".env"),
-		)
-
-		return paths
+		return filepath.Join(workingDir, "deployments/", service, "development", ".env")
 	}
 
 	// Append paths for production environment
 	if envMode == user.Production.String() {
-		paths = append(paths,
-			filepath.Join(workingDir, "deployments/production", ".env"),
-			filepath.Join(workingDir, "deployments", service, "production", ".env"),
-		)
-
-		return paths
+		return filepath.Join(workingDir, "deployments", service, "production", ".env")
 	}
 
 	log.Printf("Warning: Unsupported environment mode '%s'", envMode)
 
-	return nil
+	return ""
 }

@@ -1,12 +1,12 @@
 services:
   ####################### Application #######################
-  user-service-development:
+  user-service:
     build:
       context: ../../..
       dockerfile: deployments/user/development/Dockerfile
       target: development
-    container_name: go-monorepo-microsvc-clean-arch_user-service-development
-#    ports:
+    container_name: go-monorepo-microsvc-clean-arch_user-service
+    #    ports:
     #      - "${HTTP_PORT}:${HTTP_PORT}"
     #      - "${GRPC_PORT}:${GRPC_PORT}"
     volumes:
