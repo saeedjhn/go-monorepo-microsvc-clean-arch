@@ -7,7 +7,7 @@ services:
   ######################## MYSQL ########################
 
   mysqldb:
-    container_name: go-monorepo-microsvc-clean-arch_development_mysqldb
+    container_name: go-monorepo-microsvc-clean-arch_mysqldb
     image: mysql:latest
     env_file:
       - .env
@@ -71,7 +71,7 @@ services:
 
   ######################## REDIS ########################
   redis:
-    container_name: go-monorepo-microsvc-clean-arch_development_redis
+    container_name: go-monorepo-microsvc-clean-arch_redis
     image: redis:latest
     env_file:
       - .env
@@ -91,6 +91,7 @@ services:
 
   nginx:
     image: nginx:alpine
+    container_name: go-monorepo-microsvc-clean-arch_nginx
     build:
       context: .
       # The .env file in the project root, and the env_file: field in the Compose file are two different concepts.

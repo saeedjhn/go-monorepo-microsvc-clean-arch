@@ -5,6 +5,7 @@ services:
       context: ../../..
       dockerfile: deployments/user/development/Dockerfile
       target: development
+    image: go-monorepo-microsvc-clean-arch_user-service:0.1.0-dev
     container_name: go-monorepo-microsvc-clean-arch_user-service
     #    ports:
     #      - "${HTTP_PORT}:${HTTP_PORT}"

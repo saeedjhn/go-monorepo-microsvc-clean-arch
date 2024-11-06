@@ -5,8 +5,9 @@ services:
       context: ../../..
       dockerfile: deployments/user/production/Dockerfile
       target: production
+    image: go-monorepo-microsvc-clean-arch_user-service:0.1.0-prod
     container_name: go-monorepo-microsvc-clean-arch_user-service
-#    ports:
+    #    ports:
     #      - "${HTTP_PORT}:${HTTP_PORT}"
     #      - "${GRPC_PORT}:${GRPC_PORT}"
     networks:

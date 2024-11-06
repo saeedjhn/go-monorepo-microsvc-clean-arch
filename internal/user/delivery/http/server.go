@@ -25,7 +25,7 @@ func (s Server) Run() error {
 	// Router Setup
 	// http://localhost:80/v1/users
 	s.Router.GET("/v1/users/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "Hello world!!-----")
+		return c.JSON(http.StatusOK, "Hello world")
 	})
 
 	// http://localhost:80/v1/users/about

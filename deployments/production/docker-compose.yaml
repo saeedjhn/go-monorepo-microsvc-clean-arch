@@ -7,15 +7,10 @@ services:
   ######################## MYSQL ########################
 
   mysqldb:
-    container_name: go-monorepo-microsvc-clean-arch_production_mysqldb
+    container_name: go-monorepo-microsvc-clean-arch_mysqldb
     image: mysql:latest
     env_file:
       - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
-      MYSQL_DATABASE: $MYSQL_DATABASE
-      MYSQL_USER: $MYSQL_USER
-      MYSQL_PASSWORD: $MYSQL_PASSWORD
     ports:
       - "${MYSQL_PORT}:${MYSQL_PORT}"
     volumes:
@@ -30,28 +25,27 @@ services:
   #  psqldb:
   #    container_name: go-monorepo-microsvc-clean-arch_psqldb
   #    image: postgres:latest
-  #    environment:
-  #      POSTGRES_USER: admin
-  #      POSTGRES_PASSWORD: 123456
-  #      POSTGRES_DB: backend_db
+  #    env_file:
+  #      - .env
   #    ports:
-  #      - "5001:5432"
+  #      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
   #    volumes:
   #      - psql:/var/lib/psql/data
   #    restart: always
   #    networks:
   #      - go-monorepo-microsvc-clean-arch_network
 
-  ####################### MONGO #######################
+  ####################### MONOGO #######################
 
   #  mongodb:
   #    container_name: go-monorepo-microsvc-clean-arch_mongodb
   #    image: mongo:latest
   #    environment:
-  #      MONGO_INITDB_ROOT_USERNAME: admin
-  #      MONGO_INITDB_ROOT_PASSWORD: 123456
+  #      MONGO_INITDB_ROOT_USERNAME: $
+  #      MONGO_INITDB_ROOT_PASSWORD: $
   #    ports:
   #      - "27017:27017"
+  #      - "$:$"
   #    volumes:
   #      - mongodb-data:/data/db
   #    restart: unless-stopped
@@ -76,9 +70,8 @@ services:
   #      - psqldb
 
   ######################## REDIS ########################
-
   redis:
-    container_name: go-monorepo-microsvc-clean-arch_production_redis
+    container_name: go-monorepo-microsvc-clean-arch_redis
     image: redis:latest
     env_file:
       - .env
@@ -90,6 +83,37 @@ services:
       - "${REDIS_PORT}:${REDIS_PORT}"
     networks:
       - go-monorepo-microsvc-clean-arch_network
+
+
+  ######################################### GLOBAL SERVICES #########################################
+
+  ######################## API-GATEWAY(Nginx) ########################
+
+  nginx:
+    image: nginx:alpine
+    container_name: go-monorepo-microsvc-clean-arch_nginx
+    build:
+      context: .
+      # The .env file in the project root, and the env_file: field in the Compose file are two different concepts.
+      # The .env is for settings a default environment for Compose. Values set in this file can be used within the Compose file.
+      # The env_file: field is for setting the default environment for a container. Values set in this can be used in the container, but not in the Compose file.
+    env_file:
+      - .env
+    ports:
+      - "${NGINX_HTTP_PORT_FOR_LISTEN}:${NGINX_HTTP_PORT_FOR_LISTEN}"
+      - "${NGINX_USER_SERVICE_GRPC_PORT}:${NGINX_USER_SERVICE_GRPC_PORT}"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf.template
+    command: /bin/sh -c "envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    #    ports:
+    #      - "80:80"
+    #    volumes:
+    #      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - go-monorepo-microsvc-clean-arch_network
+    depends_on:
+      - user-service
+
 
 volumes:
   mysql:
