@@ -60,7 +60,7 @@ func main() {
 	defer cancel()
 
 	if err = server.Router.Shutdown(ctxWithTimeout); err != nil {
-		log.Fatalf("Error shutdown server: %w", err)
+		log.Printf("Error shutdown server: %v", err)
 	}
 
 	<-ctxWithTimeout.Done()
